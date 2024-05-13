@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  nginx:
+    build: requirements/nginx/.
+    container_name: nginx
+    depends_on:
+      - wordpress
+      - mariadb
+    ports:
+      - "80:80"
+    volumes:
+      - ./web:/var/www/html
+    networks:
+      incep_network:
+  wordpress:
+    build: requirements/wordpress/.
+    container_name: wordpress
+    depends_on:
+      - mariadb
+    volumes:
+      - ./web:/var/www/html
+    networks:
+      incep_network:
+  mariadb:
+    build: requirements/mariadb/.
+    container_name: mariadb
+    volumes:
+      - ./storage:/var/lib/mysql
+    networks:
+      incep_network:
+
+networks:
+  incep_network:
