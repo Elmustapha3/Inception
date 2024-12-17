@@ -1,14 +1,18 @@
 server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
 
+    listen 443 ssl;
+    
+    server_name DOMAIN_NAME_PATH;
+
+    ssl_certificate CERTS_PATH;
+    ssl_certificate_key CERTS_KEY_PATH;
+ 
+    ssl_protocols TLSv1.3;   
+    
     root /var/www/html;
+
     index index.html index.htm index.php;
 
-    server_name _;
-    location / {
-        try_files $uri $uri/ =404;
-    }
 
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;

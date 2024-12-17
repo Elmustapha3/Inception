@@ -1,34 +1,54 @@
-version: "3.8"
+version: "3.8"  # !
 
 services:
   nginx:
     build: requirements/nginx/.
+    image: nginx:v1
     container_name: nginx
+    env_file:
+      .env
     depends_on:
       - wordpress
-      - mariadb
+      - mariadb  # to be rectified
     ports:
-      - "80:80"
+      - "443:443"
     volumes:
       - ./web:/var/www/html
     networks:
-      incep_network:
+      - incep_network
+
   wordpress:
     build: requirements/wordpress/.
+    image: wordpress:v1
     container_name: wordpress
     depends_on:
       - mariadb
+    env_file:
+      - .env
     volumes:
       - ./web:/var/www/html
     networks:
-      incep_network:
+      - incep_network
+
   mariadb:
     build: requirements/mariadb/.
     container_name: mariadb
+    image: mariadb:v1
     volumes:
       - ./storage:/var/lib/mysql
     networks:
-      incep_network:
+      - incep_network
+    env_file:
+      - .env
+
+
+# volumes:
+#   example:
+#       type: "nfs"
+#       o: "addr=10.40.0.199,nolock,soft,rw"
+#       device: ":/docker/example"
+
 
 networks:
   incep_network:
+    # type: bridge"
