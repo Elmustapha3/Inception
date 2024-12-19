@@ -9,46 +9,54 @@ services:
       .env
     depends_on:
       - wordpress
-      - mariadb  # to be rectified
     ports:
       - "443:443"
     volumes:
       - ./web:/var/www/html
     networks:
       - incep_network
+    restart:
+      always
+  
 
   wordpress:
     build: requirements/wordpress/.
     image: wordpress:v1
     container_name: wordpress
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
     env_file:
       - .env
+    ports:
+      - "9000:9000"
     volumes:
       - ./web:/var/www/html
     networks:
       - incep_network
+    restart:
+      always
 
   mariadb:
     build: requirements/mariadb/.
     container_name: mariadb
     image: mariadb:v1
     volumes:
-      - ./storage:/var/lib/mysql
+      - ../mariadb_storage:/var/lib/mysql
     networks:
       - incep_network
     env_file:
       - .env
-
-
-# volumes:
-#   example:
-#       type: "nfs"
-#       o: "addr=10.40.0.199,nolock,soft,rw"
-#       device: ":/docker/example"
+    ports:
+      - 3306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
 
 networks:
   incep_network:
-    # type: bridge"
+    driver: bridge
+    name: incep_network  # Set the network name explicitly

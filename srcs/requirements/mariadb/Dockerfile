@@ -1,17 +1,18 @@
 FROM debian:bullseye
 
-RUN apt update && apt install -y mariadb-server
+RUN apt update && \
+    apt upgrade -y && \
+    apt install mariadb-server -y
 
-COPY ./tools/script.sh /opt/scripts/script.sh
 
-COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/.
+COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
-#to check
-RUN mkdir /run/mysqld  
 
-RUN chmod +x /opt/scripts/script.sh
+COPY ./tools/script.sh .
+
+
+RUN chmod +x script.sh
 
 EXPOSE 3306
 
-CMD ["./opt/scripts/script.sh"]
-
+CMD [ "/bin/sh", "script.sh"]
