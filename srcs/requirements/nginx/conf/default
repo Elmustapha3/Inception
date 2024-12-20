@@ -13,7 +13,6 @@ server {
 
     index index.html index.htm index.php;
 
-
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
         fastcgi_pass wordpress:9000;

@@ -17,8 +17,6 @@ services:
       - incep_network
     restart:
       always
-  
-
   wordpress:
     build: requirements/wordpress/.
     image: wordpress:v1
@@ -36,7 +34,6 @@ services:
       - incep_network
     restart:
       always
-
   mariadb:
     build: requirements/mariadb/.
     container_name: mariadb
