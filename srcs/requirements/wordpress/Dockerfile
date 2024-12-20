@@ -1,7 +1,7 @@
 FROM debian:bullseye
 
 RUN apt-get update && apt-get install -y php-fpm \
-                php-mysqli curl mariadb-client iputils-ping
+                php-mysqli curl mariadb-client
 
 COPY ./tools/script.sh /opt/scripts/script.sh
 

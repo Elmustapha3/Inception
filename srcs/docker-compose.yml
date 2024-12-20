@@ -1,4 +1,4 @@
-version: "3.8"  # !
+version: "3.9"
 
 services:
   nginx:
@@ -12,7 +12,7 @@ services:
     ports:
       - "443:443"
     volumes:
-      - ./web:/var/www/html
+      - wordpress_data:/var/www/html
     networks:
       - incep_network
     restart:
@@ -31,7 +31,7 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - ./web:/var/www/html
+      - wordpress_data:/var/www/html
     networks:
       - incep_network
     restart:
@@ -42,7 +42,7 @@ services:
     container_name: mariadb
     image: mariadb:v1
     volumes:
-      - ../mariadb_storage:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
     networks:
       - incep_network
     env_file:
@@ -54,9 +54,26 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
+    restart:
+      always
 
+
+volumes:
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/eej-jama/data/wordpress 
+  
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/eej-jama/data/mariadb
 
 networks:
   incep_network:
     driver: bridge
-    name: incep_network  # Set the network name explicitly
+    name: incep_network

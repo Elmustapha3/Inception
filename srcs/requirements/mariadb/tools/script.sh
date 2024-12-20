@@ -1,24 +1,17 @@
 #!/bin/sh
 
-echo "Initializing MariaDB..."
+service mariadb start;
+sleep 1
 
-mkdir -p /run/mysqld
-chown mysql:mysql /run/mysqld
+mysql  -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;";
 
-mysql_install_db --user=mysql --ldata=/var/lib/mysql
+mysql  -e "CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD';";
 
-mysqld --datadir='/var/lib/mysql' &
+mysql  -e "GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'%';";
 
-until mysqladmin ping --silent; do
-  echo "Waiting for MariaDB to be ready..."
-  sleep 2
-done
+mysql  -e "FLUSH PRIVILEGES;";
 
-mysql -u root -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;"
-mysql -u root -e "CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD';"
-mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$DB_USER'@'%' WITH GRANT OPTION;"
-mysql -u root -e "FLUSH PRIVILEGES;"
+service mariadb stop;
+sleep 1
 
-echo "Database and user created successfully."
-
-wait
+exec mysqld_safe ;
